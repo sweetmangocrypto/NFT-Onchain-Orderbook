@@ -4,7 +4,7 @@ pragma solidity ^0.8.0;
 import "@openzeppelin/contracts/token/ERC721/IERC721.sol";
 import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
 
-contract ERC721Marketplace is ReentrancyGuard {
+contract nftOnchainOrderbook is ReentrancyGuard {
     struct Order {
         address tokenAddress;
         uint256 tokenId;
@@ -44,8 +44,7 @@ contract ERC721Marketplace is ReentrancyGuard {
     function listToken(address _tokenAddress, uint256 _tokenId, uint256 _price) external {
         require(IERC721(_tokenAddress).ownerOf(_tokenId) == msg.sender, "Not owner of the token");
         require(!listedTokens[_tokenAddress][_tokenId], "Token already listed");
-
-        IERC721(_tokenAddress).approve(address(this), _tokenId);
+        require(IERC721(_tokenAddress).getApproved(_tokenId) == address(this), "Marketplace not approved to transfer this token");
 
         orders[nextOrderId] = Order({
             tokenAddress: _tokenAddress,
