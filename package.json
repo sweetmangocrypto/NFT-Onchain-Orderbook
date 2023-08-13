@@ -1,0 +1,7 @@
+{
+  "name": "NFT-Onchain-Orderbook",
+  "version": "1.0.0",
+  "devDependencies": {
+    "hardhat": "^2.17.1"
+  }
+}
