@@ -93,9 +93,12 @@ describe("ERC721Marketplace", function() {
 
         it("Should allow a seller to withdraw their funds", async function() {
             const beforeBalance = await alice.getBalance();
-            await marketplace.connect(alice).withdraw();
+            const tx = await marketplace.connect(alice).withdraw();
+            const receipt = await tx.wait();
+            const gasUsed = receipt.gasUsed.mul(tx.gasPrice);
+
             const afterBalance = await alice.getBalance();
-            expect(afterBalance.sub(beforeBalance)).to.equal(ethers.utils.parseEther("1"));
+            expect(afterBalance.sub(beforeBalance.add(gasUsed))).to.be.closeTo(ethers.utils.parseEther("1"), ethers.utils.parseEther("0.01"));
         });
 
         it("Should reset the seller's pending withdrawals after withdrawal", async function() {

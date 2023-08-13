@@ -66,7 +66,6 @@ contract nftOnchainOrderbook is ReentrancyGuard {
         require(order.isActive, "Order not active");
         require(msg.sender == order.seller, "Not the seller");
 
-        IERC721(order.tokenAddress).approve(order.seller, order.tokenId);
         listedTokens[order.tokenAddress][order.tokenId] = false;
 
         order.isActive = false;
@@ -79,7 +78,7 @@ contract nftOnchainOrderbook is ReentrancyGuard {
         require(order.isActive, "Order not active");
         require(msg.value == order.price, "Incorrect Ether sent");
 
-        IERC721(order.tokenAddress).transferFrom(address(this), msg.sender, order.tokenId);
+        IERC721(order.tokenAddress).transferFrom(order.seller, msg.sender, order.tokenId);
         listedTokens[order.tokenAddress][order.tokenId] = false;
 
         pendingWithdrawals[order.seller] += order.price;
